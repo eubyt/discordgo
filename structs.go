@@ -633,24 +633,43 @@ const (
 )
 
 // IconURL returns a URL to the guild's icon.
-func (g *Guild) IconURL() string {
+// size: The size of the image with a power of two
+// if size is an empty string, no size parameter will
+// be added to the URL.
+func (g *Guild) IconURL(size string) string {
+	var URL string
 	if g.Icon == "" {
-		return ""
+		URL = ""
+	} else if strings.HasPrefix(g.Icon, "a_") {
+		URL = EndpointGuildIconAnimated(g.ID, g.Icon)
+	} else {
+		URL = EndpointGuildIcon(g.ID, g.Icon)
 	}
 
-	if strings.HasPrefix(g.Icon, "a_") {
-		return EndpointGuildIconAnimated(g.ID, g.Icon)
+	if size != "" {
+		return URL + "?size=" + size
 	}
 
-	return EndpointGuildIcon(g.ID, g.Icon)
+	return URL
 }
 
 // BannerURL returns a URL to the guild's banner.
-func (g *Guild) BannerURL() string {
+// size: The size of the image with a power of two
+// if size is an empty string, no size parameter will
+// be added to the URL.
+func (g *Guild) BannerURL(size string) string {
+	var URL string
 	if g.Banner == "" {
 		return ""
+	} else {
+		URL = EndpointGuildBanner(g.ID, g.Banner)
 	}
-	return EndpointGuildBanner(g.ID, g.Banner)
+
+	if size != "" {
+		return URL + "?size=" + size
+	}
+
+	return URL
 }
 
 // A UserGuild holds a brief version of a Guild

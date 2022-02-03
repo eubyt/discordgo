@@ -18,6 +18,8 @@ const InteractionDeadline = time.Second * 3
 // ApplicationCommandType represents the type of application command.
 type ApplicationCommandType uint8
 
+type ApplicationCommandPermissionType uint8
+
 // Application command types
 const (
 	// ChatApplicationCommand is default command type. They are slash commands (i.e. called directly from the chat).
@@ -38,7 +40,8 @@ type ApplicationCommand struct {
 	Description string `json:"description,omitempty"`
 	Version     string `json:"version,omitempty"`
 	// NOTE: Chat commands only. Otherwise it mustn't be set.
-	Options []*ApplicationCommandOption `json:"options"`
+	Options           []*ApplicationCommandOption `json:"options"`
+	DefaultPermission *bool                       `json:"default_permission,omitempty"`
 }
 
 // ApplicationCommandOptionType indicates the type of a slash command's option.
@@ -103,6 +106,27 @@ type ApplicationCommandOptionChoice struct {
 	Name  string      `json:"name"`
 	Value interface{} `json:"value"`
 }
+
+type ApplicationCommandPermissions struct {
+	ID         string                           `json:"id"`
+	Type       ApplicationCommandPermissionType `json:"type"`
+	Permission bool                             `json:"permission"`
+}
+
+type ApplicationCommandPermissionsList struct {
+	Permissions []*ApplicationCommandPermissions `json:"permissions"`
+}
+type GuildApplicationCommandPermissions struct {
+	ID            string                           `json:"id"`
+	ApplicationID string                           `json:"application_id"`
+	GuildID       string                           `json:"guild_id"`
+	Permissions   []*ApplicationCommandPermissions `json:"permissions"`
+}
+
+const (
+	ApplicationCommandPermissionTypeRole ApplicationCommandPermissionType = 1
+	ApplicationCommandPermissionTypeUser ApplicationCommandPermissionType = 2
+)
 
 // InteractionType indicates the type of an interaction event.
 type InteractionType uint8
